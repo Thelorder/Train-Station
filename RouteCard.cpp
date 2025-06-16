@@ -5,7 +5,7 @@ RouteCard::RouteCard(const String& name, int number, const String& dest)
     : DiscountCard(name, number), destination(dest) {}
 
 float RouteCard::calculateDiscount(float originalPrice) const {
-    return isValid ? originalPrice : 0;
+    return (this->destination == destination) ? originalPrice : 0;
 }
 
 void RouteCard::validate() {

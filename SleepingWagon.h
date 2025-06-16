@@ -11,6 +11,11 @@ public:
     inline String getTypeHeader() const override {
         return "=== SLEEPING WAGON ===";
     }
+    inline void toFile(std::ofstream& out) const override {
+        Wagon::toFile(out); // Save base fields
+        out << pricePer100Km << "\n";
+        out << "END_SLEEPING_WAGON\n";
+    }
 };
 
 SleepingWagon::SleepingWagon(int id, float basePrice, float pricePer100Km)

@@ -11,4 +11,9 @@ public:
         String getTypeHeader() const override {
             return "=== FIRST CLASS WAGON ===";
         }
+        void toFile(std::ofstream& out) const override {
+            Wagon::toFile(out); // Save base fields
+            out << comfortFactor << "\n";
+            out << "END_FIRST_CLASS_WAGON\n";
+        }
 };

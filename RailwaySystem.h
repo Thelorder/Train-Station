@@ -10,6 +10,8 @@
 #include "AgeCard.h"
 #include "RouteCard.h"
 #include "DistanceCard.h"
+#include <iostream>
+#include "Ticket.h"
 
 class RailwaySystem {
 private:
@@ -27,8 +29,8 @@ private:
     Station& findStation(const String& name);
     void validateAdmin() const;
     String floatToString(float value) const;
-    void saveTicketToFile(const String& filename, int trainId,
-        int wagonId, int seatId, float price) const;
+ //   void saveTicketToFile(const String& filename, int trainId,
+   //     int wagonId, int seatId, float price) const;
 
     void handlePrintStations() const;
     void handlePrintSchedule(const String& station) const;
@@ -83,9 +85,15 @@ public:
 
     ~RailwaySystem() {
         for (size_t i = 0; i < discountCards.get_size(); i++) {
-            if (discountCards[i] != nullptr) {  
+            if (discountCards[i]) {
                 delete discountCards[i];
             }
+        }
+        discountCards.clear();
+
+ 
+        for (size_t i = 0; i < trains.get_size(); i++) {
+            trains[i].clearWagons(); 
         }
     }
 };

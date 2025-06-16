@@ -6,11 +6,9 @@ AgeCard::AgeCard(const String& name, int number, int age)
     : DiscountCard(name, number), age(age) {}
 
 float AgeCard::calculateDiscount(float originalPrice) const {
-    if (!isValid) return 0;
-
-    if (age <= 10) return originalPrice; 
-    if (age <= 18) return originalPrice * 0.5f; 
-    return originalPrice * 0.2f; 
+    if (age <= 10) return originalPrice; // 100%
+    if (age <= 18) return originalPrice * 0.5f; // 50%
+    return originalPrice * 0.2f;
 }
 
 void AgeCard::validate() {

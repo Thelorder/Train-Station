@@ -9,6 +9,12 @@ Wagon::Wagon(int id, float basePrice, size_t seatCount, const String& type)
     }
 }
 
+Wagon::~Wagon()
+{
+
+    std::cout << "Destroying Wagon " << id << std::endl;
+}
+
 bool Wagon::bookSeat(int seatId) {
     if (seatId < 0 || seatId >= (int)seats.get_size()) return false;
     seats[seatId] = 1;
@@ -72,5 +78,42 @@ void Wagon::printDetails() const
     for (size_t i = 0; i < seats.get_size(); ++i) {
         std::cout << (seats[i] ? "XX " : String::from_int(i + 1) + " ");
     }
+    std::cout << "\n";
+}
+
+void Wagon::printSeatingPlan() const
+{
+    int totalSeats = getSeatCount();       // e.g., 10 or 20 or 5
+    int seatsPerRow = getSeatsPerRow();    // e.g., 2, 4, or 1
+
+    std::cout << " ";
+    for (int i = 0; i < seatsPerRow * 3 - 1; ++i) std::cout << "_";
+    std::cout << "\n";
+
+    for (int i = 0; i < totalSeats; i += seatsPerRow) {
+        std::cout << "|";
+        for (int j = 0; j < seatsPerRow; ++j) {
+            int seatNum = i + j + 1;
+            if (seatNum > totalSeats) break;
+
+            String seatStr;
+            if (isSeatBooked(seatNum)) {
+                seatStr = "xx";
+            }
+            else {
+                seatStr = formatSeatNumber(seatNum); 
+            }
+
+            std::cout << seatStr.c_str();
+            if (j != seatsPerRow - 1) std::cout << " ";
+        }
+        for (int j = totalSeats - i; j < seatsPerRow; ++j) {
+            std::cout << "   ";
+        }
+        std::cout << "|\n";
+    }
+
+    std::cout << " ";
+    for (int i = 0; i < seatsPerRow * 3 - 1; ++i) std::cout << "_";
     std::cout << "\n";
 }

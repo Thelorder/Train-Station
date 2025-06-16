@@ -17,6 +17,7 @@ Train::Train(int id, const String& start, const String& end, float distance, flo
     : id(id), startStation(start), endStation(end), distance(distance), speed(speed) {}
 
 Train::~Train() {
+    std::cout << "Destroying Train " << id << std::endl;
     for (size_t i = 0; i < wagons.get_size(); ++i) {
         delete wagons[i];
     }

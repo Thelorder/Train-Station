@@ -4,6 +4,7 @@
 #include "Vector.hpp"
 #include <ctime>
 #include <fstream>
+#include <iostream>
 
 class Station {
     String name;
@@ -57,12 +58,9 @@ public:
     }
 
     ~Station() {
-        for (size_t i = 0; i < departingTrains.get_size(); i++) {
-            delete departingTrains[i];
-        }
-        for (size_t i = 0; i < arrivingTrains.get_size(); i++) {
-            delete arrivingTrains[i];
-        }
+        std::cout << "Station destructor for " << name.c_str() << std::endl;
+        departingTrains.clear();
+        arrivingTrains.clear();
     }
 
     bool addDepartingTrain(Train* train);

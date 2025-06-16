@@ -47,15 +47,15 @@ void Ticket::saveToFile(const String& filename) const {
     std::ofstream file(filename.c_str());
     if (!file) throw std::runtime_error("Cannot save ticket");
 
-    file << "---Train Ticket---\n"
-        << "Ticket: " << train->getStartStation() << " - " << train->getEndStation() << "\n"
-        << "Train ID: " << train->getId() << "\n"
-        << "Wagon ID: " << wagonId << "\n"
-        << "Seat ID: " << seatId << "\n"
-        << "Departure time: " << train->getDepartureTime() << "\n"
-        << "Arrival time: " << train->getArrivalTime() << "\n"
-        << "Departure platform: " << train->getDeparturePlatform() << "\n"
-        << "Purchase time: " << purchaseDateTime << "\n"
-        << "Discount: " << formatPrice(discountAmount) << "\n"
-        << "Price: " << formatPrice(basePrice - discountAmount) << "\n\n";
+    file << "|==========Train Ticket==========|\n";
+    file << "Ticket: " << train->getStartStation() << " - " << train->getEndStation() << "\n";
+    file << "Train ID: " << train->getId() << "\n";
+    file << "Wagon ID: " << wagonId << "\n";
+    file << "Seat ID: " << seatId << "\n";
+    file << "Departure time: " << train->getDepartureTime() << "\n";
+    file << "Arrival time: " << train->getArrivalTime() << "\n";
+    file << "Departure platform: " << train->getDeparturePlatform() << "\n";
+    file << "Discount: " << (int)discountAmount << " lv.\n";
+    file << "Price: " << (int)(basePrice - discountAmount) << " lv.\n";
+    file << "|================================|\n";
 }

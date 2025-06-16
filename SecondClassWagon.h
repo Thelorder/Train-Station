@@ -11,4 +11,9 @@ public:
     String getTypeHeader() const override {
         return "=== SECOND CLASS WAGON ===";
     }
+    void toFile(std::ofstream& out) const override {
+        Wagon::toFile(out); // Save base fields
+        out << luggagePricePerKg << "\n";
+        out << "END_SECOND_CLASS_WAGON\n";
+    }
 };

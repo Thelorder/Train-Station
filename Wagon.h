@@ -27,7 +27,7 @@ protected:
 
 public:
     Wagon(int id, float basePrice, size_t seatCount, const String& type);
-    virtual ~Wagon() = default;
+    virtual ~Wagon();
 
     bool bookSeat(int seatId);
     bool isSeatBooked(int seatId) const;
@@ -37,9 +37,16 @@ public:
 
     virtual float calculatePrice(float distance, const String& extraParam) const = 0;
     void printDetails() const;
+    void printSeatingPlan() const;
 
     int getId() const { return id; }
     const String& getType() const { return wagonType; }
     size_t getSeatCount() const { return seats.get_size(); }
     virtual String getTypeHeader() const = 0;
+
+    virtual void toFile(std::ofstream& out) const {
+        out << "WAGON " << id << "\n";
+        out << wagonType.c_str() << "\n";
+        out << basePrice << "\n";
+    }
 };
