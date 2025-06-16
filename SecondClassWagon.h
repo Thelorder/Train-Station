@@ -12,7 +12,7 @@ public:
         return "=== SECOND CLASS WAGON ===";
     }
     void toFile(std::ofstream& out) const override {
-        Wagon::toFile(out); // Save base fields
+        Wagon::toFile(out);
         out << luggagePricePerKg << "\n";
         out << "END_SECOND_CLASS_WAGON\n";
     }

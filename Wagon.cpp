@@ -9,12 +9,6 @@ Wagon::Wagon(int id, float basePrice, size_t seatCount, const String& type)
     }
 }
 
-Wagon::~Wagon()
-{
-
-    std::cout << "Destroying Wagon " << id << std::endl;
-}
-
 bool Wagon::bookSeat(int seatId) {
     if (seatId < 0 || seatId >= (int)seats.get_size()) return false;
     seats[seatId] = 1;
@@ -83,8 +77,8 @@ void Wagon::printDetails() const
 
 void Wagon::printSeatingPlan() const
 {
-    int totalSeats = getSeatCount();       // e.g., 10 or 20 or 5
-    int seatsPerRow = getSeatsPerRow();    // e.g., 2, 4, or 1
+    int totalSeats = getSeatCount();  
+    int seatsPerRow = getSeatsPerRow();    
 
     std::cout << " ";
     for (int i = 0; i < seatsPerRow * 3 - 1; ++i) std::cout << "_";
@@ -114,6 +108,6 @@ void Wagon::printSeatingPlan() const
     }
 
     std::cout << " ";
-    for (int i = 0; i < seatsPerRow * 3 - 1; ++i) std::cout << "_";
+    for (int i = 0; i < seatsPerRow * 3 - 1; ++i) std::cout << "-";
     std::cout << "\n";
 }

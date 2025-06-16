@@ -202,7 +202,6 @@ String String::substr(size_t start, size_t len) const
     return result;
 }
 
-// Numeric Conversions
 String String::from_int(int value) {
     if (value == 0) return String("0");
 

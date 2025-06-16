@@ -27,7 +27,7 @@ protected:
 
 public:
     Wagon(int id, float basePrice, size_t seatCount, const String& type);
-    virtual ~Wagon();
+    virtual ~Wagon() = default;
 
     bool bookSeat(int seatId);
     bool isSeatBooked(int seatId) const;

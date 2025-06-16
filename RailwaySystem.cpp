@@ -163,7 +163,6 @@ void RailwaySystem::handleBuyTicket(int trainId, int wagonId, int seatId,
         throw std::runtime_error("Booking failed");
     }
 
-    // Create ticket object and save to file (no card file, so pass "")
     Ticket ticket(&train, wagonId, seatId, price, "");
     ticket.saveToFile(ticketFile);
 
@@ -293,21 +292,7 @@ Train& RailwaySystem::findTrain(int id) {
 
 void RailwaySystem::handlePrintSchedule(const String& station) const {
     const Station& st = findStation(station);
-    std::cout << "Schedule for station " << station.c_str() << ":\n";
-
-    std::cout << "\nDEPARTURES:\n";
-    for (size_t i = 0; i < st.getDepartureCount(); i++) {
-        if (const Train* train = st.getDepartureTrain(i)) {
-            train->printDetails();
-        }
-    }
-
-    std::cout << "\nARRIVALS:\n";
-    for (size_t i = 0; i < st.getArrivalCount(); i++) {
-        if (const Train* train = st.getArrivalTrain(i)) {
-            train->printDetails();
-        }
-    }
+    st.printSchedule();
 }
 
 void RailwaySystem::handlePrintScheduleDestination(const String& station,
@@ -382,7 +367,6 @@ void RailwaySystem::handleBuyTicketWithDiscount(int trainId, int wagonId, int se
         throw std::runtime_error("Booking failed");
     }
 
-    // Pass the discount card file as the last parameter
     Ticket ticket(&train, wagonId, seatId, finalPrice, discountCard);
     ticket.saveToFile(ticketFile);
 
@@ -404,9 +388,9 @@ void RailwaySystem::handleMoveWagon(int srcTrainId, int wagonId, int destTrainId
     Train& srcTrain = findTrain(srcTrainId);
     Train& destTrain = findTrain(destTrainId);
 
-    Wagon* wagon = srcTrain.getWagon(wagonId); // Get the wagon first
+    Wagon* wagon = srcTrain.getWagon(wagonId);
     if (!wagon) throw std::runtime_error("Wagon not found");
-    if (!srcTrain.removeWagon(wagonId)) { // Then try to remove
+    if (!srcTrain.removeWagon(wagonId)) {
         throw std::runtime_error("Failed to remove wagon");
     }
     if (!wagon) throw std::runtime_error("Wagon not found");
@@ -531,25 +515,21 @@ void RailwaySystem::saveAllData() {
     std::ofstream file("railway_system.txt");
     if (!file) throw std::runtime_error("Cannot save data");
 
-    // 1. Save stations
     file << "[STATIONS]\n";
     for (size_t i = 0; i < stations.get_size(); i++) {
         stations[i].toFile(file);
     }
 
-    // 2. Save trains (without wagons)
     file << "[TRAINS]\n";
     for (size_t i = 0; i < trains.get_size(); i++) {
-        trains[i].toFileBasic(file); // Add this method to save just train info
+        trains[i].toFileBasic(file); 
     }
 
-    // 3. Save wagons separately
     file << "[WAGONS]\n";
     for (size_t i = 0; i < trains.get_size(); i++) {
-        trains[i].saveWagons(file); // Add this method to Train class
+        trains[i].saveWagons(file); 
     }
 
-    // 4. Save discount cards
     file << "[CARDS]\n";
     for (size_t i = 0; i < discountCards.get_size(); i++) {
         if (discountCards[i]) {
@@ -557,6 +537,8 @@ void RailwaySystem::saveAllData() {
             discountCards[i]->saveToFile(String("card_") + String::from_int(i) + ".txt");
         }
     }
+    file << "[TICKETS]\n";
+    saveTickets(file);
 }
 
 void RailwaySystem::loadAllData() {
@@ -577,6 +559,10 @@ void RailwaySystem::loadAllData() {
         else if (line == "[CARDS]") {
             loadDiscountCards(systemFile);
         }
+        else if (line == "[TICKETS]") {
+            loadTickets(systemFile);
+        }
+
     }
 }
 
@@ -660,5 +646,66 @@ void RailwaySystem::loadDiscountCards(std::ifstream& in) {
             card->loadFromFile(filename);
             discountCards.push_back(card);
         }
+    }
+}
+
+void RailwaySystem::saveTickets(std::ofstream& out) const
+{
+    out << tickets.get_size() << "\n";
+    for (size_t i = 0; i < tickets.get_size(); ++i) {
+        String filename = String("ticket_") + String::from_int(i) + ".txt";
+        tickets[i]->saveToFile(filename);
+        out << "TICKET_FILE:" << filename << "\n";
+    }
+}
+
+void RailwaySystem::loadTickets(std::ifstream& in)
+{
+    size_t count = 0;
+    String line = String::read_line(in);
+    if (!line.empty()) {
+        count = line.to_int();
+    }
+
+    for (size_t i = 0; i < count; ++i) {
+        String ticketLine = String::read_line(in);
+        size_t pos = ticketLine.contains("TICKET_FILE:");
+        if (pos == (size_t)-1) continue;
+        String filename = ticketLine.substr(pos + 12).trim();
+
+        std::ifstream ticketFile(filename.c_str());
+        if (!ticketFile) continue;
+
+        String innerLine;
+        int trainId = -1, wagonId = -1, seatId = -1;
+        while (!(innerLine = String::read_line(ticketFile)).empty()) {
+            if (innerLine.size() >= 9 && innerLine.substr(0, 9) == "Train ID:") {
+                trainId = innerLine.substr(9).trim().to_int();
+            }
+            else if (innerLine.size() >= 10 && innerLine.substr(0, 10) == "Wagon ID: ") {
+                wagonId = innerLine.substr(10).trim().to_int();
+            }
+            else if (innerLine.size() >= 9 && innerLine.substr(0, 9) == "Seat ID: ") {
+                seatId = innerLine.substr(9).trim().to_int();
+            }
+        }
+        ticketFile.close();
+
+        Train* tptr = nullptr;
+        for (size_t j = 0; j < trains.get_size(); ++j) {
+            if (trains[j].getId() == trainId) {
+                tptr = &trains[j];
+                break;
+            }
+        }
+        if (!tptr) continue;
+
+        Ticket* ticket = new Ticket(); 
+        ticket->loadFromFile(filename, tptr);
+        tickets.push_back(ticket);
+
+
+        Wagon* wptr = tptr->getWagon(wagonId);
+        if (wptr) wptr->bookSeat(seatId);
     }
 }

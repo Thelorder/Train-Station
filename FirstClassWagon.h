@@ -12,7 +12,7 @@ public:
             return "=== FIRST CLASS WAGON ===";
         }
         void toFile(std::ofstream& out) const override {
-            Wagon::toFile(out); // Save base fields
+            Wagon::toFile(out); 
             out << comfortFactor << "\n";
             out << "END_FIRST_CLASS_WAGON\n";
         }

@@ -18,9 +18,11 @@ private:
     static String formatPrice(float price);
 
 public:
+    Ticket() : train(nullptr), wagonId(0), seatId(0), basePrice(0), discountAmount(0) {}
     Ticket(const Train* train, int wagonId, int seatId, float basePrice,const String& cardFile = "");
 
     void saveToFile(const String& filename) const;
+    void loadFromFile(const String& filename, const Train* trainPtr);
 
     const String& getId() const { return ticketId; }
     int getTrainId() const { return train->getId(); }

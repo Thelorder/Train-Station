@@ -12,7 +12,7 @@ public:
         return "=== SLEEPING WAGON ===";
     }
     inline void toFile(std::ofstream& out) const override {
-        Wagon::toFile(out); // Save base fields
+        Wagon::toFile(out); 
         out << pricePer100Km << "\n";
         out << "END_SLEEPING_WAGON\n";
     }

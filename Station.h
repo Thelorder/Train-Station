@@ -58,7 +58,6 @@ public:
     }
 
     ~Station() {
-        std::cout << "Station destructor for " << name.c_str() << std::endl;
         departingTrains.clear();
         arrivingTrains.clear();
     }

@@ -21,6 +21,7 @@ private:
     Vector<DiscountCard*> discountCards;
     Vector<String> adminUsernames;
     Vector<String> adminPasswords;
+    Vector<Ticket*> tickets;
     bool adminLoggedIn = false;
 
     const Train& findTrain(int id) const;
@@ -29,8 +30,6 @@ private:
     Station& findStation(const String& name);
     void validateAdmin() const;
     String floatToString(float value) const;
- //   void saveTicketToFile(const String& filename, int trainId,
-   //     int wagonId, int seatId, float price) const;
 
     void handlePrintStations() const;
     void handlePrintSchedule(const String& station) const;
@@ -69,6 +68,8 @@ private:
     void loadTrains(std::ifstream& in);
     void saveDiscountCards(std::ofstream& out) const;
     void loadDiscountCards(std::ifstream& in);
+    void saveTickets(std::ofstream& out) const;
+    void loadTickets(std::ifstream& in);
 
 public:
 
